@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D3.js Project</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+
+
+<body
+ <h1> der skal gøres</h1>
+    <ul>
+    <li><del>gør det muligt for brugren at ændre dataen i arrayet </del></li>
+    <li>giv søjlerne labels</li>
+    <li>lav noget der ligner en website</li>
+    <li>giv en måde at lade folk se hvordan deres kostplan burde se ud</li>
+    <ul>
+
+ <h1> ting der kunne gøres</h1>
+    <ul>
+    <li>måske host det på en server?</li>
+    </ul>
+
+    <div id="chart"></div>
+        <script>
+        const barWidth = 20;
+        const barSpacing = 10;
+        const chartWidth = 500;
+        const chartHeight = 500;
+
+        function renderChart(data) {
+            let colors = ['#FBB65B', '#513551', '#de3163'];
+
+            let stackGenerator = d3.stack()
+                .keys(['orange', 'grå', 'rød']);
+            let stackedSeries = stackGenerator(data);
+
+            let svg = d3.select('#chart')
+                .append('svg')
+                .attr('width', chartWidth)
+                .attr('height', chartHeight);
+
+            let g = svg.append('g')
+                .selectAll('g.series')
+                .data(stackedSeries)
+                .enter()
+                .append('g')
+                .classed('series', true)
+                .style('fill', function (d, i) {
+                    return colors[i];
+                });
+
+            g.selectAll('rect')
+                .data(function (d) {
+                    return d;
+                })
+                .join('rect')
+                .attr('width', barWidth)
+                .attr('x', function (d, i) {
+                    return i * (barWidth + barSpacing);
+                })
+                .attr('y', function (d) {
+                    return chartHeight - d[1];
+                })
+                .attr('height', function (d) {
+                    return d[1] - d[0];
+                })
+                .on('click', function (event, d) {
+                    let newValue = prompt('Hvad skal den nye værdi være for ' + d.data.day + ', ' + this.parentNode.__data__.key + '?', d[1] - d[0]);
+                    if (newValue !== null) {
+                        let key = this.parentNode.__data__.key;
+                        d.data[key] = parseInt(newValue);
+                        d3.select('#chart').select('svg').remove();
+                        renderChart(data);
+                    }
+                });
+
+            g.selectAll("text")
+                .data(function (d) {
+                    return d;
+                })
+                .enter()
+                .append("text")
+                .text(d => d[1] - d[0])
+                .attr("x", (d, i) => i * (barWidth + barSpacing) + barWidth / 2)
+                .attr("y", d => chartHeight - d[1] - 5)
+                .attr("text-anchor", "middle")
+                .attr("fill", "black")
+                .attr("font-size", "12px")
+                .attr("font-family", "Arial");
+        }
+
+        let data = [
+            { day: 'Man', orange: 120, grå: 180, rød: 100 },
+            { day: 'Tir', orange: 60, grå: 185, rød: 105 },
+            { day: 'Ons', orange: 100, grå: 215, rød: 110 },
+            { day: 'Tor', orange: 80, grå: 230, rød: 105 },
+            { day: 'Fre', orange: 120, grå: 240, rød: 105 },
+            { day: 'Lør', orange: 80, grå: 230, rød: 105 },
+            { day: 'Søn', orange: 120, grå: 240, rød: 105 }
+        ];
+
+        renderChart(data);
+        </script>
+    </script>
+    <div id="rect-man-orange" onclick="alert('mandag klikked på')"></div>
+ 
+
