@@ -18,8 +18,8 @@
     <li>lav noget der ligner en website</li>
     <li>giv en måde at lade folk se hvordan deres kostplan burde se ud</li>
     <ul>
-<h2> en ændring</h2
- <h1> ting der kunne gøres</h1>
+<h2> en ændring</h2>
+<h1> ting der kunne gøres</h1>
     <ul>
     <li>måske host det på en server?</li>
     </ul>
@@ -31,7 +31,7 @@
         const chartWidth = 500;
        
         function renderChart(data) {
-            const chartHeight = Math.max(...data.map(d => d.orange + d.grå + d.rød));
+            const chartHeight = Math.max(...data.map(d => d.orange + d.grå + d.rød)) + 30; //giver plads til labels
             // Definer farver til de stablede søjler
             let colors = ['#FBB65B', '#513551', '#de3163'];
 
@@ -44,7 +44,7 @@
             let svg = d3.select('#chart')
             .append('svg')
             .attr('width', chartWidth)
-            .attr('height', chartHeight);
+            .attr('height', chartHeight + 30); // giver plads til labels
 
             // Opret en gruppe for hver serie i de stablede data
             let g = svg.append('g')
@@ -54,7 +54,7 @@
             .append('g')
             .classed('series', true)
             .style('fill', function (d, i) {
-            return colors[i]; // Tildel en farve til hver serie
+            return colors[i]; // Tildel en farve til hver seriech
             });
 
             // Opret rektangler for hvert datapunkt i serien
@@ -98,6 +98,21 @@
             .attr("fill", "black") // Sæt tekstfarven
             .attr("font-size", "12px") // Sæt fontstørrelsen
             .attr("font-family", "Arial"); // Sæt fonttypen
+
+            svg.selectAll("text.bottom-label")
+            .data(data) // Bind data til bunden af søjlerne
+            .enter()
+            .append("text")
+            .classed("bottom-label", true)
+            .text(d => d.day) // Vis dagen som label
+            .attr("x", (d, i) => i * (barWidth + barSpacing) + barWidth / 2) // Positioner labelen horisontalt
+            .attr("y", chartHeight + 15) // Positioner labelen under søjlen
+            .attr("text-anchor", "middle") // Centrer teksten horisontalt
+            .attr("fill", "black") // Sæt tekstfarven
+            .attr("font-size", "12px") // Sæt fontstørrelsen
+            .attr("font-family", "Arial"); // Sæt fonttypen
+
+
         }
         
 
@@ -112,7 +127,6 @@
         ];
 
         renderChart(data);
-        </script>
     </script>
  
 
