@@ -10,111 +10,103 @@
 
 
 <body>
- <h1> der skal gøres</h1>
-    <ul>
-    <li><del>gør det muligt for brugren at ændre dataen i arrayet </del></li>
-    <li><del> giv værdierner labels</del></li>
-    <li>giv søjlerne labels</li>
-    <li>lav noget der ligner en website</li>
-    <li>giv en måde at lade folk se hvordan deres kostplan burde se ud</li>
-    <ul>
-<h2> en ændring</h2>
-<h1> ting der kunne gøres</h1>
-    <ul>
-    <li>måske host det på en server?</li>
-    </ul>
 
     <div id="chart"></div>
-        <script>
-        const barWidth = 20;
+    <script>
+        const barWidth = 100;
         const barSpacing = 10;
-        const chartWidth = 500;
-       
+        const chartWidth = barWidth * 7 + barSpacing * 6; // 7 søjler med mellemrum
+        const dayFontSize = "30px";
+        const labelFontSize = "12px";
+        const labelFontFamily = "Arial";
+        const dayLabelAfstand = parseInt(dayFontSize, 10);
+
         function renderChart(data) {
             const chartHeight = Math.max(...data.map(d => d.orange + d.grå + d.rød)) + 30; //giver plads til labels
             // Definer farver til de stablede søjler
             let colors = ['#FBB65B', '#513551', '#de3163'];
 
             // Opret en stack-generator for nøglerne i dataen
-            let stackGenerator = d3.stack() 
-            .keys(['orange', 'grå', 'rød']);
+            let stackGenerator = d3.stack()
+                .keys(['orange', 'grå', 'rød']);
             let stackedSeries = stackGenerator(data);
 
             // Opret et SVG-element til at holde diagrammet
             let svg = d3.select('#chart')
-            .append('svg')
-            .attr('width', chartWidth)
-            .attr('height', chartHeight + 30); // giver plads til labels
+                .append('svg')
+                .attr('width', chartWidth)
+                .attr('height', chartHeight + 30); // giver plads til labels
 
             // Opret en gruppe for hver serie i de stablede data
             let g = svg.append('g')
-            .selectAll('g.series')
-            .data(stackedSeries)
-            .enter()
-            .append('g')
-            .classed('series', true)
-            .style('fill', function (d, i) {
-            return colors[i]; // Tildel en farve til hver seriech
-            });
+                .selectAll('g.series')
+                .data(stackedSeries)
+                .enter()
+                .append('g')
+                .classed('series', true)
+                .style('fill', function (d, i) {
+                    return colors[i]; // Tildel en farve til hver seriech
+                });
 
             // Opret rektangler for hvert datapunkt i serien
             g.selectAll('rect')
-            .data(function (d) {
-            return d; // Bind data for hver serie
-            })
-            .join('rect')
-            .attr('width', barWidth) // Sæt bredden på hver søjle
-            .attr('x', function (d, i) {
-            return i * (barWidth + barSpacing); // Beregn x-position
-            })
-            .attr('y', function (d) {
-            return chartHeight - d[1]; // Beregn y-position
-            })
-            .attr('height', function (d) {
-            return d[1] - d[0]; // Beregn højden på søjlen
-            })
-            .on('click', function (event, d) {
-            // Bed brugeren om at opdatere værdien ved klik
-            let newValue = prompt('Hvad skal den nye værdi være for ' + d.data.day + ', ' + this.parentNode.__data__.key + '?', d[1] - d[0]);
-            if (newValue !== null) {
-            let key = this.parentNode.__data__.key; // Hent nøgle for serien
-            d.data[key] = parseInt(newValue); // Opdater dataen med den nye værdi
-            d3.select('#chart').select('svg').remove(); // Fjern det gamle diagram
-            renderChart(data); // Genoptegn diagrammet med opdaterede data
-            }
-            });
+                .data(function (d) {
+                    return d; // Bind data for hver serie
+                })
+                .join('rect')
+                .attr('width', barWidth) // Sæt bredden på hver søjle
+                .attr('x', function (d, i) {
+                    return i * (barWidth + barSpacing); // Beregn x-position
+                })
+                .attr('y', function (d) {
+                    return chartHeight - d[1]; // Beregn y-position
+                })
+                .attr('height', function (d) {
+                    return d[1] - d[0]; // Beregn højden på søjlen
+                })
+                .on('click', function (event, d) {
+                    // Bed brugeren om at opdatere værdien ved klik
+                    let newValue = prompt('Hvad skal den nye værdi være for ' + d.data.day + ', ' + this.parentNode.__data__.key + '?', d[1] - d[0]);
+                    if (newValue !== null) {
+                        let key = this.parentNode.__data__.key; // Hent nøgle for serien
+                        d.data[key] = parseInt(newValue); // Opdater dataen med den nye værdi
+                        d3.select('#chart').select('svg').remove(); // Fjern det gamle diagram
+                        renderChart(data); // Genoptegn diagrammet med opdaterede data
+                    }
+                });
 
-            // Tilføj labels til hver søjle
+            // Tilføj labels til hver katagori
             g.selectAll("text")
-            .data(function (d) {
-            return d; // Bind data for hver serie
-            })
-            .enter()
-            .append("text")
-            .text(d => d[1] - d[0]) // Vis værdien af søjlen
-            .attr("x", (d, i) => i * (barWidth + barSpacing) + barWidth / 2) // Positioner labelen horisontalt
-            .attr("y", d => chartHeight - (d[0] + (d[1] - d[0]) / 2)) // Positioner labelen vertikalt i midten af serien
-            .attr("text-anchor", "middle") // Centrer teksten horisontalt
-            .attr("fill", "black") // Sæt tekstfarven
-            .attr("font-size", "12px") // Sæt fontstørrelsen
-            .attr("font-family", "Arial"); // Sæt fonttypen
+                .data(function (d) {
+                    return d; // Bind data for hver serie
+                })
+                .enter()
+                .append("text")
+                .text(d => d[1] - d[0]) // Vis værdien af katagorien
+                .attr("x", (d, i) => i * (barWidth + barSpacing) + barWidth / 2) // Positioner labelen horisontalt
+                .attr("y", d => chartHeight - (d[0] + (d[1] - d[0]) / 2)) // Positioner labelen vertikalt i midten af serien
+                .attr("text-anchor", "middle") // Centrer teksten horisontalt
+                .attr("fill", "black") // Sæt tekstfarven
+                .attr("font-size", labelFontSize) // Sæt fontstørrelsen
+                .attr("font-family", "Arial"); // Sæt fonttypen
 
+            // Tilføj labels til hver dag
             svg.selectAll("text.bottom-label")
-            .data(data) // Bind data til bunden af søjlerne
-            .enter()
-            .append("text")
-            .classed("bottom-label", true)
-            .text(d => d.day) // Vis dagen som label
-            .attr("x", (d, i) => i * (barWidth + barSpacing) + barWidth / 2) // Positioner labelen horisontalt
-            .attr("y", chartHeight + 15) // Positioner labelen under søjlen
-            .attr("text-anchor", "middle") // Centrer teksten horisontalt
-            .attr("fill", "black") // Sæt tekstfarven
-            .attr("font-size", "12px") // Sæt fontstørrelsen
-            .attr("font-family", "Arial"); // Sæt fonttypen
+                .data(data) // Bind data til bunden af søjlerne
+                .enter()
+                .append("text")
+                .classed("bottom-label", true)
+                .text(d => d.day) // Vis dagen som label
+                .attr("x", (d, i) => i * (barWidth + barSpacing) + barWidth / 2) // Positioner labelen horisontalt
+                .attr("y", chartHeight + dayLabelAfstand) // Positioner labelen under søjlen
+                .attr("text-anchor", "middle") // Centrer teksten horisontalt
+                .attr("fill", "black") // Sæt tekstfarven
+                .attr("font-size", dayFontSize) // Sæt fontstørrelsen
+                .attr("font-family", "Arial"); // Sæt fonttypen
 
 
         }
-        
+
 
         let data = [
             { day: 'Man', orange: 120, grå: 180, rød: 100 },
@@ -128,5 +120,21 @@
 
         renderChart(data);
     </script>
- 
-
+    
+<div style="margin-top: 100px;"></div>
+    <h1> der skal gøres</h1>
+    <ul>
+        <li><del>gør det muligt for brugren at ændre dataen i arrayet </del></li>
+        <li><del> giv værdierner labels</del></li>
+        <li><del>giv søjlerne labels</del></li>
+        <li>lav noget der ligner en website</li>
+        <li>giv en måde at lade folk se hvordan deres kostplan burde se ud</li>
+        <ul>
+            <h2> en ændring</h2>
+            <h1> ting der kunne gøres</h1>
+            <ul>
+                <li>måske host det på en server?</li>
+            </ul>
+        </ul>
+    </ul>
+</div>
