@@ -10,7 +10,8 @@
 
 
 <body>
-
+<h1>Din kostplan</h1>
+<h2>Uge 1</h2>
     <div id="chart"></div>
     <script>
         const barWidth = 100;
@@ -22,7 +23,7 @@
         const dayLabelAfstand = parseInt(dayFontSize, 10);
 
         function renderChart(data) {
-            const chartHeight = Math.max(...data.map(d => d.orange + d.grå + d.rød)) + 30; //giver plads til labels
+            const chartHeight = Math.max(...data.map(d => d.orange + d.grå + d.rød)) + dayLabelAfstand; //giver plads til labels
             // Definer farver til de stablede søjler
             let colors = ['#FBB65B', '#513551', '#de3163'];
 
@@ -35,7 +36,7 @@
             let svg = d3.select('#chart')
                 .append('svg')
                 .attr('width', chartWidth)
-                .attr('height', chartHeight + 30); // giver plads til labels
+                .attr('height', chartHeight + dayLabelAfstand); // giver plads til labels
 
             // Opret en gruppe for hver serie i de stablede data
             let g = svg.append('g')
