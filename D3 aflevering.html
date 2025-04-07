@@ -108,13 +108,13 @@
         }
         // Eksempeldata til diagrammet
         let data = [
-            { day: 'Man', orange: 120, grå: 180, rød: 100 },
-            { day: 'Tir', orange: 60, grå: 185, rød: 105 },
-            { day: 'Ons', orange: 100, grå: 215, rød: 110 },
-            { day: 'Tor', orange: 80, grå: 230, rød: 105 },
-            { day: 'Fre', orange: 120, grå: 240, rød: 105 },
-            { day: 'Lør', orange: 80, grå: 230, rød: 105 },
-            { day: 'Søn', orange: 120, grå: 240, rød: 105 }
+            { day: 'Mandag', orange: 120, grå: 180, rød: 100 },
+            { day: 'Tirdag', orange: 60, grå: 185, rød: 105 },
+            { day: 'Onsdag', orange: 100, grå: 215, rød: 110 },
+            { day: 'Tordag', orange: 80, grå: 230, rød: 105 },
+            { day: 'Fredag', orange: 120, grå: 240, rød: 105 },
+            { day: 'Lørdag', orange: 80, grå: 230, rød: 105 },
+            { day: 'Søndag', orange: 120, grå: 240, rød: 105 }
         ];
         // Gem data i localStorage
         function saveDataToLocalStorage(data) {
@@ -142,6 +142,19 @@
         })(renderChart);
 
         renderChart(data);
+       
+        function kostRåd (data) {
+            let råd = "Her er nogle råd til at forbedre din kostplan:\n";
+            let total = data.reduce((acc, d) => acc + d.orange + d.grå + d.rød, 0);
+            let average = total / data.length;
+            if (average > 200) {
+                råd += "Overvej at reducere dit samlede kalorieindtag.\n";
+            } else {
+                råd += "Dit kalorieindtag ser fint ud.\n";
+            }
+            return råd;
+        }
+
     </script>
 </div>
     <br>
@@ -153,13 +166,13 @@
         <li><del>gør det muligt for brugren at ændre dataen i arrayet </del></li>
         <li><del> giv værdierner labels</del></li>
         <li><del>giv søjlerne labels</del></li>
-        <li>lav noget der ligner en website</li>
-        <li>giv en måde at lade folk se hvordan deres kostplan burde se ud</li>
+        <li>giv råd til hvad folk skal ændre i deres kostplan</li>
     <ul>
 
     <h1> ting der kunne gøres</h1>
     <ul>
         <li>måske host det på en server?</li>
+        <li>lav noget der ligner en website</li>
     </ul>
     
 </body>
