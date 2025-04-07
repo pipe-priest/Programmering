@@ -84,7 +84,7 @@
                 })
                 .enter()
                 .append("text")
-                .text(d => d[1] - d[0]+'kcal') // Vis værdien af katagorien
+                .text(d => d[1] - d[0] + 'kcal') // Vis værdien af katagorien
                 .attr("x", (d, i) => i * (barWidth + barSpacing) + barWidth / 2) // Positioner labelen horisontalt
                 .attr("y", d => chartHeight - (d[0] + (d[1] - d[0]) / 2)) // Positioner labelen vertikalt i midten af serien
                 .attr("text-anchor", "middle") // Centrer teksten horisontalt
@@ -144,21 +144,44 @@
         })(renderChart);
 
         renderChart(data);
-       
-        function kostRåd (data) {
+        
+        function næringstyperRåd(type,upper,lower){
             let råd = "Her er nogle råd til at forbedre din kostplan:\n";
-            let total = data.reduce((acc, d) => acc + d.kalorier + d.fedt + d.protein, 0);
-            let average = total / data.length;
-            if (average > 200) {
-                råd += "Overvej at reducere dit samlede kalorieindtag.\n";
+
+            if (type > upper) {
+                råd += "Overvej at reducere dit " + type + " indtag.\n";
+            } else if (type < lower) {
+                råd += "Du skal forøge dit " + type + " indtag.\n";
             } else {
-                råd += "Dit kalorieindtag ser fint ud.\n";
+                råd += "Dit " + type + " indtag er i den anbefalede zone.\n";
             }
             return råd;
+
+
+
         }
 
+        function kostRåd(data) {
+            let råd = "Her er nogle råd til at forbedre din kostplan:\n";
+            let kulhydrater = 0;
+            let fedt = 0;
+            let protein = 0;
+
+            data.forEach(d => {
+                kulhydrater += d.kulhydrater;
+                fedt += d.fedt;
+                protein += d.protein;
+            });
+
+            råd += næringstyperRåd(kulhydrater, 300, 200);
+            råd += næringstyperRåd(fedt, 200, 100);
+            råd += næringstyperRåd(protein, 150, 100);
+
+            return råd;
+        }
+        
     </script>
-</div>
+    </div>
     <button onclick="alert(kostRåd(data))">Beregn dit personlige kostråd</button>
     <br>
     <br>
@@ -170,12 +193,12 @@
         <li><del> giv værdierner labels</del></li>
         <li><del>giv søjlerne labels</del></li>
         <li>giv råd til hvad folk skal ændre i deres kostplan</li>
-    <ul>
+        <ul>
 
-    <h1> ting der kunne gøres</h1>
-    <ul>
-        <li>måske host det på en server?</li>
-        <li>lav noget der ligner en website</li>
-    </ul>
-    
+            <h1> ting der kunne gøres</h1>
+            <ul>
+                <li>måske host det på en server?</li>
+                <li>lav noget der ligner en website</li>
+            </ul>
+
 </body>
