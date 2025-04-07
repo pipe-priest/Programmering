@@ -16,26 +16,26 @@
         const barWidth = 100;
         const barSpacing = 10;
         const chartWidth = barWidth * 7 + barSpacing * 6; // 7 søjler med mellemrum
-        const dayFontSize = "30px";
+        const dayFontSize = "25px";
         const labelFontSize = "12px";
         const labelFontFamily = "Arial";
-        const dayLabelAfstand = parseInt(dayFontSize, 10);
+        const dayLabelAfstand = parseInt(dayFontSize, 10); // afstand mellem søjler og dag labels
 
         function renderChart(data) {
-            const chartHeight = Math.max(...data.map(d => d.orange + d.grå + d.rød)) + dayLabelAfstand; //giver plads til labels
+            const chartHeight = Math.max(...data.map(d => d.kalorier + d.fedt + d.protein)) + dayLabelAfstand*1.25; //giver plads til labels
             // Definer farver til de stablede søjler
             let colors = ['#FBB65B', '#513551', '#de3163'];
 
             // Opret en stack-generator for nøglerne i dataen
             let stackGenerator = d3.stack()
-                .keys(['orange', 'grå', 'rød']);
+                .keys(['kalorier', 'fedt', 'protein']);
             let stackedSeries = stackGenerator(data);
 
             // Opret et SVG-element til at holde diagrammet
             let svg = d3.select('#chart')
                 .append('svg')
                 .attr('width', chartWidth)
-                .attr('height', chartHeight + dayLabelAfstand); // giver plads til labels
+                .attr('height', chartHeight + dayLabelAfstand*1.25); // giver plads til labels
 
             // Opret en gruppe for hver serie i de stablede data
             let g = svg.append('g')
@@ -108,13 +108,13 @@
         }
         // Eksempeldata til diagrammet
         let data = [
-            { day: 'Mandag', orange: 120, grå: 180, rød: 100 },
-            { day: 'Tirdag', orange: 60, grå: 185, rød: 105 },
-            { day: 'Onsdag', orange: 100, grå: 215, rød: 110 },
-            { day: 'Tordag', orange: 80, grå: 230, rød: 105 },
-            { day: 'Fredag', orange: 120, grå: 240, rød: 105 },
-            { day: 'Lørdag', orange: 80, grå: 230, rød: 105 },
-            { day: 'Søndag', orange: 120, grå: 240, rød: 105 }
+            { day: 'Mandag', kalorier: 120, fedt: 180, protein: 100 },
+            { day: 'Tirdag', kalorier: 60, fedt: 185, protein: 105 },
+            { day: 'Onsdag', kalorier: 100, fedt: 215, protein: 110 },
+            { day: 'Tordag', kalorier: 80, fedt: 230, protein: 105 },
+            { day: 'Fredag', kalorier: 120, fedt: 240, protein: 105 },
+            { day: 'Lørdag', kalorier: 80, fedt: 230, protein: 105 },
+            { day: 'Søndag', kalorier: 120, fedt: 240, protein: 105 }
         ];
         // Gem data i localStorage
         function saveDataToLocalStorage(data) {
@@ -145,7 +145,7 @@
        
         function kostRåd (data) {
             let råd = "Her er nogle råd til at forbedre din kostplan:\n";
-            let total = data.reduce((acc, d) => acc + d.orange + d.grå + d.rød, 0);
+            let total = data.reduce((acc, d) => acc + d.kalorier + d.fedt + d.protein, 0);
             let average = total / data.length;
             if (average > 200) {
                 råd += "Overvej at reducere dit samlede kalorieindtag.\n";
