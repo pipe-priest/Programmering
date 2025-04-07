@@ -22,20 +22,20 @@
         const dayLabelAfstand = parseInt(dayFontSize, 10); // afstand mellem søjler og dag labels
 
         function renderChart(data) {
-            const chartHeight = Math.max(...data.map(d => d.kalorier + d.fedt + d.protein)) + dayLabelAfstand*1.25; //giver plads til labels
+            const chartHeight = Math.max(...data.map(d => d.kulhydrater + d.fedt + d.protein)) + dayLabelAfstand * 1.25; //giver plads til labels
             // Definer farver til de stablede søjler
             let colors = ['#FBB65B', '#513551', '#de3163'];
 
             // Opret en stack-generator for nøglerne i dataen
             let stackGenerator = d3.stack()
-                .keys(['kalorier', 'fedt', 'protein']);
+                .keys(['kulhydrater', 'fedt', 'protein']);
             let stackedSeries = stackGenerator(data);
 
             // Opret et SVG-element til at holde diagrammet
             let svg = d3.select('#chart')
                 .append('svg')
                 .attr('width', chartWidth)
-                .attr('height', chartHeight + dayLabelAfstand*1.25); // giver plads til labels
+                .attr('height', chartHeight + dayLabelAfstand * 1.25); // giver plads til labels
 
             // Opret en gruppe for hver serie i de stablede data
             let g = svg.append('g')
@@ -64,6 +64,8 @@
                 .attr('height', function (d) {
                     return d[1] - d[0]; // Beregn højden på søjlen
                 })
+
+                // Lad brugeren ændre værdien ved klik
                 .on('click', function (event, d) {
                     // Bed brugeren om at opdatere værdien ved klik
                     let newValue = prompt('Hvad skal den nye værdi være for ' + d.data.day + ', ' + this.parentNode.__data__.key + '?', d[1] - d[0]);
@@ -82,7 +84,7 @@
                 })
                 .enter()
                 .append("text")
-                .text(d => d[1] - d[0]) // Vis værdien af katagorien
+                .text(d => d[1] - d[0]+'kcal') // Vis værdien af katagorien
                 .attr("x", (d, i) => i * (barWidth + barSpacing) + barWidth / 2) // Positioner labelen horisontalt
                 .attr("y", d => chartHeight - (d[0] + (d[1] - d[0]) / 2)) // Positioner labelen vertikalt i midten af serien
                 .attr("text-anchor", "middle") // Centrer teksten horisontalt
@@ -108,13 +110,13 @@
         }
         // Eksempeldata til diagrammet
         let data = [
-            { day: 'Mandag', kalorier: 120, fedt: 180, protein: 100 },
-            { day: 'Tirdag', kalorier: 60, fedt: 185, protein: 105 },
-            { day: 'Onsdag', kalorier: 100, fedt: 215, protein: 110 },
-            { day: 'Tordag', kalorier: 80, fedt: 230, protein: 105 },
-            { day: 'Fredag', kalorier: 120, fedt: 240, protein: 105 },
-            { day: 'Lørdag', kalorier: 80, fedt: 230, protein: 105 },
-            { day: 'Søndag', kalorier: 120, fedt: 240, protein: 105 }
+            { day: 'Mandag', kulhydrater: 120, fedt: 180, protein: 100 },
+            { day: 'Tirdag', kulhydrater: 60, fedt: 185, protein: 105 },
+            { day: 'Onsdag', kulhydrater: 100, fedt: 215, protein: 110 },
+            { day: 'Tordag', kulhydrater: 80, fedt: 230, protein: 105 },
+            { day: 'Fredag', kulhydrater: 120, fedt: 240, protein: 105 },
+            { day: 'Lørdag', kulhydrater: 80, fedt: 230, protein: 105 },
+            { day: 'Søndag', kulhydrater: 120, fedt: 240, protein: 105 }
         ];
         // Gem data i localStorage
         function saveDataToLocalStorage(data) {
@@ -157,6 +159,7 @@
 
     </script>
 </div>
+    <button onclick="alert(kostRåd(data))">Beregn dit personlige kostråd</button>
     <br>
     <br>
     <br>
