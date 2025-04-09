@@ -173,9 +173,9 @@
                 protein += d.protein;
             });
 
-            råd += næringstyperRåd(kulhydrater, 300, 200);
-            råd += næringstyperRåd(fedt, 200, 100);
-            råd += næringstyperRåd(protein, 150, 100);
+            råd += næringstyperRåd(kulhydrater, kostProcent(60), kostProcent(45));
+            råd += næringstyperRåd(fedt, kostProcent(40),kostProcent(25));
+            råd += næringstyperRåd(protein, kostProcent(20), kostProcent(10));
 
             return råd;
         }
